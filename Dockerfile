@@ -29,8 +29,6 @@ RUN apk --no-cache add \
     postgresql \
     supervisor \
     tar && \
-
-# Install phppadmin sources
     mkdir -p /run/nginx && \
     mkdir -p /var/www /data/data && \
     cd /var/www && \
@@ -38,14 +36,14 @@ RUN apk --no-cache add \
     tar -xzf "phpPgAdmin-${PHPPGADMIN_VERSION}.tar.gz" --strip 1 && \
     rm "phpPgAdmin-${PHPPGADMIN_VERSION}.tar.gz" && \
     rm -rf conf/config.inc.php-dist LICENSE CREDITS DEVELOPERS FAQ HISTORY INSTALL TODO TRANSLATORS && \
-# Fix bug with current postgres version
     sed -i 's|$cmd = $exe . " -i";|$cmd = $exe;|' /var/www/dbexport.php && \
-# Remove dependencies
     apk --no-cache del curl tar
 
 # Add some configurations files
 COPY root/ /
 COPY config.inc.php /var/www/conf/
+
+ENV MAX_UPLOAD_SIZE=2048
 
 # Apply PHP FPM configuration
 RUN sed -i -e "s|;clear_env\s*=\s*no|clear_env = no|g" /etc/php5/php-fpm.conf && \
@@ -55,7 +53,12 @@ RUN sed -i -e "s|;clear_env\s*=\s*no|clear_env = no|g" /etc/php5/php-fpm.conf &&
     sed -i -e "s|;listen\.owner\s*=\s*|listen.owner = |g" /etc/php5/php-fpm.conf && \
     sed -i -e "s|;listen\.group\s*=.*$|listen.group = nginx|g" /etc/php5/php-fpm.conf && \
     sed -i -e "s|;listen\.mode\s*=\s*|listen.mode = |g" /etc/php5/php-fpm.conf && \
+    echo "upload_max_filesize = ${MAX_UPLOAD_SIZE}M" >> /etc/php5/php.ini && \
+    echo "post_max_size = ${MAX_UPLOAD_SIZE}M" >> /etc/php5/php.ini && \
     chown -R nobody /var/www
+
+# Apply nginx configuration
+RUN sed -i -e "s|client_max_body_size\s*2M;|client_max_body_size ${MAX_UPLOAD_SIZE}M;|g" /etc/nginx/nginx.conf
 
 EXPOSE 80
 WORKDIR /var/www
