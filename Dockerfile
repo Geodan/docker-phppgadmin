@@ -53,12 +53,14 @@ RUN sed -i -e "s|;clear_env\s*=\s*no|clear_env = no|g" /etc/php5/php-fpm.conf &&
     sed -i -e "s|;listen\.owner\s*=\s*|listen.owner = |g" /etc/php5/php-fpm.conf && \
     sed -i -e "s|;listen\.group\s*=.*$|listen.group = nginx|g" /etc/php5/php-fpm.conf && \
     sed -i -e "s|;listen\.mode\s*=\s*|listen.mode = |g" /etc/php5/php-fpm.conf && \
-    echo "upload_max_filesize = ${MAX_UPLOAD_SIZE}M" >> /etc/php5/php.ini && \
-    echo "post_max_size = ${MAX_UPLOAD_SIZE}M" >> /etc/php5/php.ini && \
+    sed -i -e "s|;listen\.mode\s*=\s*|listen.mode = |g" /etc/php5/php-fpm.conf && \
     chown -R nobody /var/www
 
-# Apply nginx configuration
-RUN sed -i -e "s|client_max_body_size\s*2M;|client_max_body_size ${MAX_UPLOAD_SIZE}M;|g" /etc/nginx/nginx.conf
+# Apply Nginx/PHP configuration
+RUN sed -i -e "s|max_execution_time\s*=\s*30|max_execution_time = 600|g" /etc/php5/php.ini && \
+    echo "upload_max_filesize = ${MAX_UPLOAD_SIZE}M" >> /etc/php5/php.ini && \
+    echo "post_max_size = ${MAX_UPLOAD_SIZE}M" >> /etc/php5/php.ini && \
+    sed -i -e "s|client_max_body_size\s*2M;|client_max_body_size ${MAX_UPLOAD_SIZE}M;|g" /etc/nginx/nginx.conf
 
 EXPOSE 80
 WORKDIR /var/www
