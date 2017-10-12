@@ -38,9 +38,7 @@ RUN apk --no-cache add \
     tar -xzf "phpPgAdmin-${PHPPGADMIN_VERSION}.tar.gz" --strip 1 && \
     rm "phpPgAdmin-${PHPPGADMIN_VERSION}.tar.gz" && \
     rm -rf conf/config.inc.php-dist LICENSE CREDITS DEVELOPERS FAQ HISTORY INSTALL TODO TRANSLATORS && \
-# Fix bug with current postgres version
     sed -i 's|$cmd = $exe . " -i";|$cmd = $exe;|' /var/www/dbexport.php && \
-# Remove dependencies
     apk --no-cache del curl tar
 
 # Add some configurations files
