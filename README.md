@@ -1,9 +1,6 @@
 # Docker phpPgAdmin
 
-[![](https://images.microbadger.com/badges/image/turgon37/phppgadmin.svg)](https://microbadger.com/images/turgon37/phppgadmin "Get your own image badge on microbadger.com")
-[![](https://images.microbadger.com/badges/version/turgon37/phppgadmin.svg)](https://microbadger.com/images/turgon37/phppgadmin "Get your own version badge on microbadger.com")
-
-This images contains an instance of phppgadmin web application served by nginx on port 80
+This images contains an instance of phppgadmin web application served by nginx on port 80. It's forked from https://github.com/Turgon37/docker-phppgadmin and maintained by [Geodan](http://www.geodan.nl). Images are served publicly via [Quay.io](https://quay.io/repository/geodannl/phppgadmin).
 
 ## Docker Informations
 
@@ -41,18 +38,18 @@ This images contains an instance of phppgadmin web application served by nginx o
 
 ```
 git clone
-docker build -t turgon37/phppgadmin .
+docker build -t quay.io/geodannl/phppgadmin .
 ```
 
 * or Automatic
 
 ```
-docker pull turgon37/phppgadmin
+docker pull quay.io/geodannl/phppgadmin
 ```
 
 
 ## Usage
 
 ```
-docker run -p 8000:80 -e "POSTGRES_HOST=127.0.0.1" -e "POSTGRES_PORT=5432" -e "POSTGRES_NAME=Intranet" turgon37/phppgadmin
+docker run -p 8000:80 -e "POSTGRES_HOST=127.0.0.1" -e "POSTGRES_PORT=5432" -e "POSTGRES_NAME=Intranet" quay.io/geodannl/phppgadmin
 ```
